@@ -1,0 +1,208 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+
+<dom-module id="b7-gallery">
+  <template>
+    <style>
+      :host {
+        display: none;
+        color: white;
+      }
+
+      #stage {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 2400;
+        display: none;
+        background-color: black;
+        user-select: none;
+      }
+      
+      .slide {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        max-width: 100%;
+        max-height: 100%;
+        margin: auto;
+      }
+
+      paper-icon-button {
+        height: 4em;
+        width: 4em;
+        opacity: 0.2;
+        transition: opacity 0.25s ease-in-out;
+      }
+
+      paper-icon-button:hover {
+        opacity: 1;
+      }
+
+      .chevron {
+        position: absolute;
+        top: 50%;
+        margin-top: -2em;
+      }
+
+      .chevron.right {
+        right: 0;
+      }
+
+      .toolbar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 2400;
+        height: 3em;
+        background-image: linear-gradient(black, transparent);
+        transform: translateY(-100%);
+        transition: transform 0.25s ease-in-out 0.05s;
+        visibility: hidden;
+        will-change: transform;
+      }
+
+      .toolbar[visible] {
+        transform: translateY(0);
+        visibility: visible;
+      }
+
+    </style>
+    <div tabindex="-1" id="stage" style="display: block; top: 0px; left: 0px; bottom: 0px; right: 0px;">
+      
+      <img class="slide" id="slide">
+      <img class="slide" style="display: none" id="exitSlide">
+
+      <paper-icon-button class="chevron left" icon="icons:chevron-left" on-tap="previous"></paper-icon-button>
+      <paper-icon-button class="chevron right" icon="icons:chevron-right" on-tap="next"></paper-icon-button>
+    </div>
+    <div class="toolbar" visible>
+      <slot name="toolbar">
+        <paper-icon-button icon="icons:close" on-tap="close"></paper-icon-button>
+      </slot>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `b7-gallery`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class B7Gallery extends Polymer.Element {
+      static get is() { return 'b7-gallery'; }
+      static get properties() {
+        return {
+          open: {
+            type: Boolean
+          },
+          targetSelector: {
+            type: String,
+            value: '.gallery-item'
+          },
+          _items: Array,
+          _selectedIndex: Number
+        };
+      }
+
+      connectedCallback()
+      {
+        super.connectedCallback();
+        this._items = document.querySelectorAll(this.targetSelector);
+        this._items.forEach(item => item.addEventListener('click', this.open.bind(this)));
+        
+        document.addEventListener('webkitfullscreenchange', ev => {
+          if (document.webkitFullscreenElement == null) this._finishClose();
+        });
+      }
+      
+      open(event)
+      {
+        this._requestFullScreen();
+        this.style.display = 'block';
+        this.$.slide.src = event.target.dataset.url;
+        this._selectedIndex = Array.prototype.indexOf.call(this._items, event.target);
+      }
+      
+      close()
+      {
+        this._exitFullScreen();
+        this._finishClose();
+      }
+
+      next()
+      {
+        this._page(1);
+      }
+
+      previous()
+      {
+        this._page(-1);
+      }
+
+      _page(steps)
+      {
+        let nextItem = this._items[this._selectedIndex + steps]
+        if (!nextItem) return
+
+        let slide = this.$.slide
+        let exitSlide = this.$.exitSlide
+        exitSlide.src = slide.src
+        slide.src = nextItem.dataset.url
+
+        slide.animate(
+            { opacity: [0, 1] },
+            {
+                duration: 250,
+                easing: "cubic-bezier(0.42, 0, 0.58, 1)"
+            }
+        );
+        
+        exitSlide.style.display = 'block'
+        exitSlide.animate(
+            {
+                opacity: [1, 0],
+                translateX: ['0', `${-steps*10}%`]
+            },
+            {
+                duration: 250,
+                easing: "cubic-bezier(0.42, 0, 0.58, 1)"
+            }
+        ).addEventListener('finish', _ => exitSlide.style.display = 'none');
+        this._selectedIndex += steps
+      }
+
+      _finishClose()
+      {
+        this.style.display = 'none';
+      }
+
+      _requestFullScreen()
+      {
+        this.requestFullScreen && this.requestFullScreen() ||
+        this.webkitRequestFullScreen && this.webkitRequestFullScreen() ||
+        this.mozRequestFullScreen && this.mozRequestFullScreen() ||
+        this.msRequestFullScreen && this.msRequestFullScreen();
+      }
+
+      _exitFullScreen()
+      {
+        document.exitFullscreen && document.exitFullscreen() ||
+        document.webkitExitFullscreen && document.webkitExitFullscreen() ||
+        document.mozExitFullscreen && document.mozExitFullscreen() ||
+        document.msExitFullscreen && document.msExitFullscreen();
+      }
+    }
+
+    window.customElements.define(B7Gallery.is, B7Gallery);
+  </script>
+</dom-module>

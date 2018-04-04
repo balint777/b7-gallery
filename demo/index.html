@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>b7-gallery demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../b7-gallery.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+      </style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic b7-gallery demo</h3>
+      <demo-snippet>
+        <template>
+          <style>
+            img {
+              width: 7em;
+            }
+          </style>
+          
+          <b7-gallery target-selector='img.gallery-item'></b7-gallery>
+
+          <img class="gallery-item"
+            src="http://placekitten.com/g/600/640"
+            data-url="http://placekitten.com/g/1920/1080"/>
+
+          <img class="gallery-item"
+            src="http://placekitten.com/g/300/320"
+            data-url="http://placekitten.com/g/1280/720"/>
+
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>
