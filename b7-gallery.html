@@ -118,25 +118,58 @@
       {
         super.connectedCallback();
         this._items = document.querySelectorAll(this.targetSelector);
-        this._items.forEach(item => item.addEventListener('click', this.open.bind(this)));
+
+        let target = null;
+        this._items.forEach(item => item.addEventListener('click', event => {
+          target = event.currentTarget;
+          this._requestFullScreen();
+        }));
+
+        let key_press_handler = (event) => {
+            switch (event.code) {
+                case "Space": case "ArrowRight": case "KeyD":
+                    this.next();
+                    break;
+                case "ArrowLeft": case "KeyA":
+                    this.previous();
+                    break;
+                default:
+                    break;
+            }
+        }
         
         document.addEventListener('webkitfullscreenchange', ev => {
-          if (document.webkitFullscreenElement == null) this._finishClose();
+          if (document.webkitFullscreenElement == null) {
+            document.removeEventListener('keydown', key_press_handler);
+            this._finishClose();
+          } else {
+            document.addEventListener('keydown', key_press_handler);
+            this._finishOpen(target);
+          }
         });
       }
       
-      open(event)
+      open()
       {
-        this._requestFullScreen();
+        this._finishOpen(this._items[this._selectedIndex]);
+      }
+
+      _finishOpen(target)
+      {
+        this.$.slide.src = target.dataset.url;
+        this._selectedIndex = Array.prototype.indexOf.call(this._items, target);
         this.style.display = 'block';
-        this.$.slide.src = event.target.dataset.url;
-        this._selectedIndex = Array.prototype.indexOf.call(this._items, event.target);
       }
       
       close()
       {
         this._exitFullScreen();
         this._finishClose();
+      }
+
+      _finishClose()
+      {
+        this.style.display = 'none';
       }
 
       next()
@@ -179,11 +212,6 @@
             }
         ).addEventListener('finish', _ => exitSlide.style.display = 'none');
         this._selectedIndex += steps
-      }
-
-      _finishClose()
-      {
-        this.style.display = 'none';
       }
 
       _requestFullScreen()
