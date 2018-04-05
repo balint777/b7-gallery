@@ -8,6 +8,11 @@
 <custom-element-demo>
   <template>
     <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <style>
+        body {
+            min-height: 20em;
+        }
+    </style>
     <link rel="import" href="b7-gallery.html">
     <next-code-block></next-code-block>
   </template>
@@ -21,7 +26,7 @@
     }
 </style>
 
-<b7-gallery target-selector='img.gallery-item'></b7-gallery>
+<b7-gallery trigger-selector='img.gallery-item'></b7-gallery>
 
 <img class="gallery-item"
     src="https://picsum.photos/100/100?image=10"
