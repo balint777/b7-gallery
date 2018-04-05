@@ -15,6 +15,11 @@
           background-repeat: no-repeat;
           background-position: center center;
         }
+
+        --iron-icon: {
+          filter: drop-shadow(0 0 .1em #000);
+          opacity: 0.8;
+        }
       }
 
       #stage {
@@ -40,17 +45,19 @@
         margin: auto;
       }
 
+      slot[name=close]::slotted(*), slot[name=close] > * {
+        position: absolute;
+        top: .1em;
+        right: .1em;
+      }
+
       .chevron::slotted(*), .chevron > * {
         position: absolute;
         top: 50%;
         margin-top: -2em;
         height: 4em;
         width: 4em;
-        opacity: 0.5;
         transition: opacity 0.25s ease-in-out;
-      }
-      .chevron::slotted(*):hover, .chevron > *:hover {
-        opacity: 1;
       }
 
       .chevron[name=right]::slotted(*), .chevron[name=right] > * {
@@ -159,6 +166,14 @@
           fullscreen: Boolean,
 
           /**
+           *
+           */
+          urlAttribute: {
+            type: String,
+            value: 'href'
+          },
+
+          /**
            * You may specify a URL for the placeholder image to be displayed
            * while the full-scale image is loaded. It is recommended to specify
            * the placefolder as a data URI, since it is loaded instantly. 
@@ -183,6 +198,13 @@
         };
       }
 
+      constructor()
+      {
+        super();
+        this._active_key_press_handler = this._handleKeyPress.bind(this);
+        this._animating = false;
+      }
+
       connectedCallback()
       {
         super.connectedCallback();
@@ -190,6 +212,7 @@
 
         let target = null;
         this._targetElements.forEach(item => item.addEventListener('click', event => {
+          event.preventDefault();
           target = event.currentTarget;
           if (!this.fullscreen || !this._requestFullScreen()) {
             this._finishOpen(target);
@@ -280,7 +303,7 @@
         this._currentIndex = Array.prototype.indexOf.call(this._targetElements, target);
         this.style.display = 'block';
         this._page(0);
-        document.addEventListener('keydown', this._handleKeyPress.bind(this));
+        document.addEventListener('keydown', this._active_key_press_handler);
       }
       
       close()
@@ -292,7 +315,7 @@
       _finishClose()
       {
         this.style.display = 'none';
-        document.removeEventListener('keydown', this._handleKeyPress.bind(this));
+        document.removeEventListener('keydown', this._active_key_press_handler);
       }
 
       next()
@@ -313,6 +336,9 @@
               case "ArrowLeft": case "KeyA":
                   this.previous();
                   break;
+              case "Escape":
+                  this.close();
+                  break;
               default:
                   break;
           }
@@ -320,23 +346,27 @@
 
       _page(step)
       {
-        let nextItem = this._targetElements[this._currentIndex + step]
-        if (!nextItem) return
+        if (this._animating) return;
 
-        this.$.exitSlide.src = this.$.slide.src
-        this.$.slide.src = nextItem.dataset.url
+        let nextItem = this._targetElements[this._currentIndex + step];
+        if (!nextItem) return;
+
+        this.$.exitSlide.src = this.$.slide.src;
+        this.$.slide.src = nextItem.getAttribute(this.urlAttribute);
 
         //document.removeEventListener('keydown', this._handleKeyPress.bind(this));
+        this._animating = true;
         this._entryAnimation.play();
 
         let animation_cleanup =  _ => {
           this.$.exitSlide.style.display = 'none';
           let preloadItem = this._targetElements[this._currentIndex + step];
-          if (preloadItem) this.$.exitSlide.src = preloadItem.dataset.url;
+          if (preloadItem) this.$.exitSlide.src = preloadItem.getAttribute(this.urlAttribute);
+          this._animating = false;
           //document.addEventListener('keydown', this._handleKeyPress.bind(this));
-        }
+        };
         
-        this.$.exitSlide.style.display = 'block'
+        this.$.exitSlide.style.display = 'block';
         if (step > 0) {
           this._exitLeftAnimation.play();
           this._exitLeftAnimation.onfinish = animation_cleanup;
@@ -346,7 +376,7 @@
         } else {
           animation_cleanup();
         }
-        this._currentIndex += step
+        this._currentIndex += step;
       }
 
       _requestFullScreen()

@@ -19,30 +19,51 @@
   </head>
   <body>
     <div class="vertical-section-container centered">
+      <h3>'Anchor tag based graceful fallback' practice using b7-gallery</h3>
+      <demo-snippet>
+        <template>
+          
+          <b7-gallery trigger-selector='a'></b7-gallery>
+
+          <a href="https://picsum.photos/1920/1080?image=10">
+            <img src="https://picsum.photos/100/100?image=10"/>
+          </a>
+          <a href="https://picsum.photos/1920/1080?image=11">
+            <img src="https://picsum.photos/100/100?image=11"/>
+          </a>
+          <a href="https://picsum.photos/1920/1080?image=12">
+            <img src="https://picsum.photos/100/100?image=12"/>
+          </a>
+          <a href="https://picsum.photos/1920/1080?image=13">
+            <img src="https://picsum.photos/100/100?image=13"/>
+          </a>
+          <a href="https://picsum.photos/1920/1080?image=14">
+            <img src="https://picsum.photos/100/100?image=14"/>
+          </a>
+
+        </template>
+      </demo-snippet>
+    </div>
+    <div class="vertical-section-container centered">
       <h3>Basic b7-gallery demo</h3>
       <demo-snippet>
         <template>
-          <style>
-            img {
-              width: 100px;
-            }
-          </style>
           
-          <b7-gallery trigger-selector='img.gallery-item'></b7-gallery>
+          <b7-gallery trigger-selector='img.trigger-gallery' url-attribute="data-url"></b7-gallery>
 
-          <img class="gallery-item"
+          <img class="trigger-gallery"
             src="https://picsum.photos/100/100?image=10"
             data-url="https://picsum.photos/1920/1080?image=10"/>
-          <img class="gallery-item"
+          <img class="trigger-gallery"
             src="https://picsum.photos/100/100?image=11"
             data-url="https://picsum.photos/1920/1080?image=11"/>
-          <img class="gallery-item"
+          <img class="trigger-gallery"
             src="https://picsum.photos/100/100?image=12"
             data-url="https://picsum.photos/1920/1080?image=12"/>
-          <img class="gallery-item"
+          <img class="trigger-gallery"
             src="https://picsum.photos/100/100?image=13"
             data-url="https://picsum.photos/1920/1080?image=13"/>
-          <img class="gallery-item"
+          <img class="trigger-gallery"
             src="https://picsum.photos/100/100?image=14"
             data-url="https://picsum.photos/1920/1080?image=14"/>
 
