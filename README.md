@@ -17,19 +17,27 @@
 ```html
 <style>
     img {
-        width: 7em;
+        width: 100px;
     }
 </style>
 
 <b7-gallery target-selector='img.gallery-item'></b7-gallery>
 
 <img class="gallery-item"
-    src="http://placekitten.com/g/600/640"
-    data-url="http://placekitten.com/g/1920/1080"/>
-
+    src="https://picsum.photos/100/100?image=10"
+    data-url="https://picsum.photos/1920/1080?image=10"/>
 <img class="gallery-item"
-    src="http://placekitten.com/g/300/320"
-    data-url="http://placekitten.com/g/1280/720"/>
+    src="https://picsum.photos/100/100?image=11"
+    data-url="https://picsum.photos/1920/1080?image=11"/>
+<img class="gallery-item"
+    src="https://picsum.photos/100/100?image=12"
+    data-url="https://picsum.photos/1920/1080?image=12"/>
+<img class="gallery-item"
+    src="https://picsum.photos/100/100?image=13"
+    data-url="https://picsum.photos/1920/1080?image=13"/>
+<img class="gallery-item"
+    src="https://picsum.photos/100/100?image=14"
+    data-url="https://picsum.photos/1920/1080?image=14"/>
 ```
 
 
