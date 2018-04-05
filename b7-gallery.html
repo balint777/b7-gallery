@@ -140,7 +140,8 @@
         let target = null;
         this._items.forEach(item => item.addEventListener('click', event => {
           target = event.currentTarget;
-          this._requestFullScreen();
+          let fullscreen = this._requestFullScreen();
+          if (!fullscreen) this._finishOpen(target);
         }));
         
         document.addEventListener('webkitfullscreenchange', ev => {
@@ -298,7 +299,7 @@
 
       _requestFullScreen()
       {
-        this.requestFullScreen && this.requestFullScreen() ||
+        return this.requestFullScreen && this.requestFullScreen() ||
         this.webkitRequestFullScreen && this.webkitRequestFullScreen() ||
         this.mozRequestFullScreen && this.mozRequestFullScreen() ||
         this.msRequestFullScreen && this.msRequestFullScreen();
