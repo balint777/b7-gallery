@@ -64,7 +64,7 @@
     }
 </style>
 
-<b7-gallery trigger-selector='img.gallery-item'></b7-gallery>
+<b7-gallery trigger-selector='img.gallery-item' url-attribute='data-url'></b7-gallery>
 
 <img class="gallery-item"
     src="https://picsum.photos/100/100?image=10"
