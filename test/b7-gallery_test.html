@@ -16,6 +16,10 @@
     <test-fixture id="BasicTestFixture">
       <template>
         <b7-gallery></b7-gallery>
+
+        <a href="https://picsum.photos/1920/1080?image=10" class="trigger-gallery">
+          <img src="https://picsum.photos/100/100?image=10"/>
+        </a>
       </template>
     </test-fixture>
 
@@ -30,12 +34,19 @@
 
         test('instantiating the element with default properties works', () => {
           const element = fixture('BasicTestFixture');
-          assert.equal(element.prop1, 'b7-gallery');
+          
+          assert.equal(element.triggerSelector, '.trigger-gallery');
+          assert.equal(element.open, false);
+          assert.equal(element.fullscreen, false);
+          assert.equal(element.urlAttribute, 'href');
+          assert.equal(element.style.visibility, 'hidden');
+
           const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello b7-gallery!');
+          const activeSlide = elementShadowRoot.querySelector('#slide');
+          assert.equal(activeSlide.src, 'https://picsum.photos/1920/1080?image=10');
         });
 
+        /*
         test('setting a property on the element works', () => {
           // Create a test fixture
           const element = fixture('ChangedPropertyTestFixture');
@@ -44,6 +55,7 @@
           const elementHeader = elementShadowRoot.querySelector('h2');
           assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
         });
+        */
 
       });
     </script>

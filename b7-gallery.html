@@ -29,7 +29,7 @@
         bottom: 0;
         left: 0;
         z-index: 2400;
-        display: none;
+        /*display: none;*/
         background-color: black;
         user-select: none;
       }
@@ -51,7 +51,7 @@
         right: .1em;
       }
 
-      .chevron::slotted(*), .chevron > * {
+      slot.chevron::slotted(*), paper-icon-button.chevron {
         position: absolute;
         top: 50%;
         margin-top: -2em;
@@ -60,7 +60,7 @@
         transition: opacity 0.25s ease-in-out;
       }
 
-      .chevron[name=right]::slotted(*), .chevron[name=right] > * {
+      slot.chevron[name=right]::slotted(*), paper-icon-button.chevron.right {
         right: 0;
       }
 
@@ -83,7 +83,7 @@
       }
 
     </style>
-    <div tabindex="-1" id="stage" style="display: block; top: 0px; left: 0px; bottom: 0px; right: 0px;">
+    <div tabindex="-1" id="stage">
       
       <iron-image id="slide"
         class="slide" preload fade sizing="contain"
@@ -96,11 +96,11 @@
       </iron-image>
 
       <slot name="left" class="chevron" on-tap="previous">
-        <paper-icon-button class="left" icon="icons:chevron-left"></paper-icon-button>
+        <paper-icon-button class="chevron left" icon="icons:chevron-left"></paper-icon-button>
       </slot>
 
       <slot name="right" class="chevron" on-tap="next">
-        <paper-icon-button class="right" icon="icons:chevron-right"></paper-icon-button>
+        <paper-icon-button class="chevron right" icon="icons:chevron-right"></paper-icon-button>
       </slot>
       
     </div>
@@ -144,6 +144,7 @@
            */
           open: {
             type: Boolean,
+            value: false,
             readonly: true
           },
 
@@ -163,7 +164,10 @@
            * the fullscreen access was not granted, the gallery will fall back
            * to occupy the full viewport area.
            */
-          fullscreen: Boolean,
+          fullscreen: {
+            type: Boolean,
+            value: false
+          },
 
           /**
            * The attribute of the trigger element to use as the URL to load
